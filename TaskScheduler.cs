@@ -14,8 +14,7 @@ namespace LatencyLogger
     class TaskScheduler
     {
         static TaskScheduler _ts;
-        const string PING_SERVER = "ec2.ap-southeast-1.amazonaws.com";
-
+        
         public static TaskScheduler instance
         {
             get
@@ -67,7 +66,7 @@ namespace LatencyLogger
         public void RunAndLogLatency()
         {
             var logmsg = String.Empty;
-            var lat = HttpsPingTimeAverage(PING_SERVER, 10, out logmsg);
+            var lat = HttpsPingTimeAverage(AppSettings.instance.ServerToTest, 10, out logmsg);
             var latRec = LatRecords.Add(lat);
             Tool.Save(LatRecords);
             latRec.logfile = Log(logmsg, Guid.NewGuid().ToString());
@@ -77,8 +76,12 @@ namespace LatencyLogger
         public double RunAndLogLatencySimple()
         {
             var logmsg = String.Empty;
-            //return PingTimeAverage(PING_SERVER, 10, out logmsg);
-            var val = HttpsPingTimeAverage(PING_SERVER, 10, out logmsg);
+            double val = 0;
+            if (AppSettings.instance.UseHttpsPingApi)
+                val = HttpsPingTimeAverage(AppSettings.instance.ServerToTest, AppSettings.instance.TotalRequestPerTest, out logmsg);
+            else
+                val = PingTimeAverage(AppSettings.instance.ServerToTest, AppSettings.instance.TotalRequestPerTest, out logmsg);
+            
             Log(logmsg, $"Log{DateTime.Now.ToString("dd-MM-yy hh-mm-ss")}");
             return val;
 
@@ -100,12 +103,12 @@ namespace LatencyLogger
 
         }
 
-        private double PingTimeAverage(string host, int echoNum)
+        private double PingTimeAverage(string host, int echoNum, out string logMsg)
         {
             long totalTime = 0;
             int timeout = 120;
             Ping pingSender = new Ping();
-
+            StringBuilder log = new StringBuilder($"Pinging to {host} at { DateTime.Now}\n");
             for (int i = 0; i < echoNum; i++)
             {
                 PingReply reply = pingSender.Send(host, timeout);
@@ -113,9 +116,13 @@ namespace LatencyLogger
                 {
                     totalTime += reply.RoundtripTime;
                 }
+
+                log.AppendLine($"Response: {reply.Status.ToString()} at {DateTime.Now} - {reply.RoundtripTime} ms");
             }
+            logMsg = log.ToString();
             return totalTime / echoNum;
         }
+        
 
         private double HttpsPingTimeAverage(string domain, int echoNum, out string logMsg)
         {

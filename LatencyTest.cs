@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Net.Sockets;
-using System.Net;
+using Microsoft.Win32;
 using System.Net.NetworkInformation;
 namespace LatencyLogger
 {
@@ -19,6 +12,8 @@ namespace LatencyLogger
         string[] schedule = { "08:00 AM", "01:00 PM", "02:30 PM" };
         const string DIR_NAME = "MyLatencyLogs";
         const string FILE_NAME = "LatencyLogs.dat";
+        const string REGISTRY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        const string APP_NAME = "LatencyLogger";
 
         private String SaveLocFullPath
         {
@@ -28,6 +23,7 @@ namespace LatencyLogger
         public LatencyTest()
         {
             InitializeComponent();
+            chkStart.Checked = GetStartup();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -38,6 +34,7 @@ namespace LatencyLogger
         private void LatencyTest_Load(object sender, EventArgs e)
         {
             saveAndReloadText(string.Empty);
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -196,5 +193,63 @@ namespace LatencyLogger
 
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            SetStartup();
+        }
+
+
+        const String REG_EXCEPTION_MESSAGE = "Something is wrong while reading/writing to registry. Try run as administrator?";
+        private void SetStartup()
+        {
+            try
+            {
+                RegistryKey rk = Registry.CurrentUser.OpenSubKey
+                    (REGISTRY, true);
+
+                if (chkStart.Checked)
+                    rk.SetValue(APP_NAME, Application.ExecutablePath);
+                else
+                    rk.DeleteValue(APP_NAME, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(REG_EXCEPTION_MESSAGE, "Registry error", MessageBoxButtons.OK);
+            }
+
+        }
+
+        private bool GetStartup()
+        {
+            try
+            {
+                RegistryKey rk = Registry.CurrentUser.OpenSubKey
+                    (REGISTRY, true);
+
+                return rk.GetValue(APP_NAME)!=null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(REG_EXCEPTION_MESSAGE, "Registry error", MessageBoxButtons.OK);
+            }
+
+            return false;
+        }
+
+        private void LatencyTest_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AppSettings.instance.Save();
+        }
+
+        private void lnkGSheet_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(AppSettings.instance.GSheetLink);
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            
+            System.Diagnostics.Process.Start(AppSettings.instance.FilePath);
+        }
     }
 }

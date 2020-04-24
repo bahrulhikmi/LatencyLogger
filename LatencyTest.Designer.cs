@@ -40,8 +40,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lnkGSheet = new System.Windows.Forms.LinkLabel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.chkStart = new System.Windows.Forms.CheckBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
@@ -61,9 +66,9 @@
             // button1
             // 
             this.button1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.button1.Location = new System.Drawing.Point(0, 169);
+            this.button1.Location = new System.Drawing.Point(0, 174);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(211, 64);
+            this.button1.Size = new System.Drawing.Size(211, 63);
             this.button1.TabIndex = 0;
             this.button1.Text = "Will be run in";
             this.button1.UseVisualStyleBackColor = true;
@@ -72,7 +77,7 @@
             // richTextBox1
             // 
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.richTextBox1.Location = new System.Drawing.Point(0, 26);
+            this.richTextBox1.Location = new System.Drawing.Point(0, 30);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(211, 105);
             this.richTextBox1.TabIndex = 1;
@@ -85,9 +90,9 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 131);
+            this.panel1.Location = new System.Drawing.Point(0, 135);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(211, 38);
+            this.panel1.Size = new System.Drawing.Size(211, 39);
             this.panel1.TabIndex = 2;
             // 
             // lblSchedule
@@ -130,32 +135,80 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.lnkGSheet);
             this.panel2.Controls.Add(this.linkLabel1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(211, 26);
+            this.panel2.Size = new System.Drawing.Size(211, 30);
             this.panel2.TabIndex = 3;
+            // 
+            // lnkGSheet
+            // 
+            this.lnkGSheet.AutoSize = true;
+            this.lnkGSheet.Location = new System.Drawing.Point(3, 9);
+            this.lnkGSheet.Name = "lnkGSheet";
+            this.lnkGSheet.Size = new System.Drawing.Size(75, 13);
+            this.lnkGSheet.TabIndex = 1;
+            this.lnkGSheet.TabStop = true;
+            this.lnkGSheet.Text = "Open G-Sheet";
+            this.lnkGSheet.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGSheet_LinkClicked);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.linkLabel2);
+            this.panel3.Controls.Add(this.chkStart);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 237);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(211, 34);
+            this.panel3.TabIndex = 4;
+            // 
+            // chkStart
+            // 
+            this.chkStart.AutoSize = true;
+            this.chkStart.Location = new System.Drawing.Point(3, 7);
+            this.chkStart.Name = "chkStart";
+            this.chkStart.Size = new System.Drawing.Size(128, 17);
+            this.chkStart.TabIndex = 0;
+            this.chkStart.Text = "Run on windows start";
+            this.chkStart.UseVisualStyleBackColor = true;
+            this.chkStart.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(150, 7);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(57, 13);
+            this.linkLabel2.TabIndex = 1;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Edit config";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // LatencyTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(211, 233);
+            this.ClientSize = new System.Drawing.Size(211, 271);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel2);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Controls.Add(this.panel3);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "LatencyTest";
             this.Text = "LatencyTest";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LatencyTest_FormClosing);
             this.Load += new System.EventHandler(this.LatencyTest_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -171,5 +224,9 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblSchedule;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.LinkLabel lnkGSheet;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.CheckBox chkStart;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

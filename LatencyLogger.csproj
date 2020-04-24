@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="LatencyRecord.cs" />
     <Compile Include="LatencyTest.cs">
       <SubType>Form</SubType>

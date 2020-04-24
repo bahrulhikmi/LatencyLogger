@@ -28,14 +28,7 @@ namespace LatencyLogger
         }
 
         public static void Save(LatencyRecords latRecs)
-        {
-
-           
-            if(!File.Exists(SaveLoc))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(SaveLoc));
-               // File.Create(SaveLoc);                
-            }
+        {                     
 
             Save<LatencyRecords>(latRecs, SaveLoc);
         }
@@ -53,6 +46,7 @@ namespace LatencyLogger
 
         public static void Save<T>(T file, String path)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
             // Create a new Serializer
             XmlSerializer serializer = new XmlSerializer(typeof(T));
 
@@ -68,24 +62,30 @@ namespace LatencyLogger
 
         public static T Read<T>(String path)
         {
+
+            if (!File.Exists(path))
+            {
+                return default(T);
+            }
+
             TextReader reader = null;
             try
             {
 
-            
-            // Create a new serializer
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
 
-            // Create a StreamReader
-            reader = new StreamReader(path);
-                        
-            // Deserialize the file
-            T file;
-            file = (T)serializer.Deserialize(reader);
+                // Create a new serializer
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+                // Create a StreamReader
+                reader = new StreamReader(path);
+
+                T file;
+                // Deserialize the file
+                file = (T)serializer.Deserialize(reader);
 
 
-            // Return the object
-            return file;
+                // Return the object
+                return file;
             }
             finally
             {
