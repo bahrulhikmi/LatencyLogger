@@ -127,31 +127,26 @@ namespace LatencyLogger
         {
             if (!AppSettings.instance.EnableVPNCheck) return true;
 
+
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                if (NetworkInterface.GetIsNetworkAvailable())
-                {
-                    NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-                    foreach (NetworkInterface Interface in interfaces)
+                NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                foreach (NetworkInterface Interface in interfaces)
+                {            
+                    if (Interface.Description.Contains(AppSettings.instance.VPNClientName)
+                      && Interface.OperationalStatus == OperationalStatus.Up)
                     {
-                        // This is the OpenVPN driver for windows. 
-                        if (Interface.Description.Contains(AppSettings.instance.VPNClientName)
-                          && Interface.OperationalStatus == OperationalStatus.Up)
+                        if (AppSettings.instance.CheckUsingConfigName)
                         {
-                            if (AppSettings.instance.CheckUsingConfigName)
-                            {
-                                if (Interface.Name.Equals(AppSettings.instance.ConfigName, StringComparison.InvariantCultureIgnoreCase))
-                                    return true;
-                            }
-                            else if (AppSettings.instance.CheckUsingDnsServer)
-                                if (Interface.GetIPProperties().DnsAddresses.Any(x => x.ToString().Contains(AppSettings.instance.DNSServer)))
-                                    return true;
+                            if (Interface.Name.Equals(AppSettings.instance.ConfigName, StringComparison.InvariantCultureIgnoreCase))
+                                return true;
                         }
+                        else if (AppSettings.instance.CheckUsingDnsServer)
+                            if (Interface.GetIPProperties().DnsAddresses.Any(x => x.ToString().Contains(AppSettings.instance.DNSServer)))
+                                return true;
                     }
                 }
-                return false;
             }
-
             return false;
 
         }
