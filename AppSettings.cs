@@ -13,7 +13,12 @@ namespace LatencyLogger
         public int TotalRequestPerTest;
         public string ServerToTest;
         public bool UseHttpsPingApi;
-
+        public bool EnableVPNCheck;
+        public string VPNClientName;
+        public bool CheckUsingDnsServer;
+        public string DNSServer;
+        public bool CheckUsingConfigName;
+        public string ConfigName;
         private static AppSettings _instance;
         public static AppSettings instance
         {
@@ -58,12 +63,23 @@ namespace LatencyLogger
             Tool.Save<AppSettings>(this, SaveLoc);
         }
 
+        public static void Refresh()
+        {
+            _instance = null;
+        }
+
         private void GetDefault()
         {
             GSheetLink = @"https://docs.google.com/spreadsheets/d/1IGk7Ll9je9qbmJrSZd8Y3ne6DOsG7I0nbbDXzv629Kk/edit#gid=0";
-            TotalRequestPerTest = 10;
+            TotalRequestPerTest = 10;            
             ServerToTest = "ec2.ap-southeast-1.amazonaws.com";
-            UseHttpsPingApi = true;
+            UseHttpsPingApi = false;
+            EnableVPNCheck = true;
+            VPNClientName = "WireGuard";
+            CheckUsingDnsServer = true;
+            DNSServer = "1.1.1.1";
+            CheckUsingConfigName = false;
+            ConfigName = "yourwireguardconfigname";
 
         }
     }

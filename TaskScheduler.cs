@@ -29,6 +29,8 @@ namespace LatencyLogger
             
         }
 
+        #region "UNUSED"
+        
         List<Timer> timers = new List<Timer>();
         public LatencyRecords LatRecords;
 
@@ -73,6 +75,8 @@ namespace LatencyLogger
 
         }
 
+        #endregion
+
         public double RunAndLogLatencySimple()
         {
             var logmsg = String.Empty;
@@ -106,18 +110,27 @@ namespace LatencyLogger
         private double PingTimeAverage(string host, int echoNum, out string logMsg)
         {
             long totalTime = 0;
-            int timeout = 120;
+            int timeout = 200;
             Ping pingSender = new Ping();
             StringBuilder log = new StringBuilder($"Pinging to {host} at { DateTime.Now}\n");
             for (int i = 0; i < echoNum; i++)
             {
-                PingReply reply = pingSender.Send(host, timeout);
-                if (reply.Status == IPStatus.Success)
+                try
                 {
-                    totalTime += reply.RoundtripTime;
+
+                    PingReply reply = pingSender.Send(host, timeout);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        totalTime += reply.RoundtripTime;
+                    }
+                    log.AppendLine($"Response: {reply.Status.ToString()} at {DateTime.Now} - {reply.RoundtripTime} ms");
+                }
+                catch (Exception e)
+                {
+                    log.AppendLine($"Exception thrown on pinging: {e.Message} - {e.InnerException} ms");
                 }
 
-                log.AppendLine($"Response: {reply.Status.ToString()} at {DateTime.Now} - {reply.RoundtripTime} ms");
+                
             }
             logMsg = log.ToString();
             return totalTime / echoNum;

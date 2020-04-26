@@ -125,6 +125,8 @@ namespace LatencyLogger
 
         private bool checkVPNEnabled()
         {
+            if (!AppSettings.instance.EnableVPNCheck) return true;
+
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
@@ -133,11 +135,17 @@ namespace LatencyLogger
                     foreach (NetworkInterface Interface in interfaces)
                     {
                         // This is the OpenVPN driver for windows. 
-                        if (Interface.Description.Contains("WireGuard")
+                        if (Interface.Description.Contains(AppSettings.instance.VPNClientName)
                           && Interface.OperationalStatus == OperationalStatus.Up)
                         {
-                            if (Interface.GetIPProperties().DnsAddresses.Any(x => x.ToString().Contains("1.1.1.1")))
-                            return true;
+                            if (AppSettings.instance.CheckUsingConfigName)
+                            {
+                                if (Interface.Name.Equals(AppSettings.instance.ConfigName, StringComparison.InvariantCultureIgnoreCase))
+                                    return true;
+                            }
+                            else if (AppSettings.instance.CheckUsingDnsServer)
+                                if (Interface.GetIPProperties().DnsAddresses.Any(x => x.ToString().Contains(AppSettings.instance.DNSServer)))
+                                    return true;
                         }
                     }
                 }
@@ -150,7 +158,7 @@ namespace LatencyLogger
 
         private void Run()
         {
-
+            AppSettings.Refresh();
             if (!checkVPNEnabled())
             {
                 notifyUser($"You are not connected through VPN (Wrong VPN) !", true);
